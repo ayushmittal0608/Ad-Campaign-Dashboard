@@ -17,9 +17,9 @@ type Props = {
 };
 
 const COLORS = {
-  active: "#1d2d4dff",     // green
-  paused: "#4e576eff",     // amber
-  completed: "#6b6f77ff",  // blue
+  active: "#1d2d4dff",
+  paused: "#4e576eff",
+  completed: "#6b6f77ff",
 };
 
 export default function CampaignStatusPie({ insights }: Props) {
@@ -34,43 +34,60 @@ export default function CampaignStatusPie({ insights }: Props) {
   ];
 
   return (
-    <div className="bg-white p-5 rounded-xl shadow">
-      <h2 className="text-lg font-semibold mb-4">
+    <div className="bg-white p-4 sm:p-5 rounded-xl shadow w-full">
+      <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">
         Campaign Status
       </h2>
 
-      <ResponsiveContainer width="100%" height={260}>
-        <PieChart>
-          <Pie
-            data={data}
-            dataKey="value"
-            nameKey="name"
-            cx="50%"
-            cy="50%"
-            outerRadius={100}
-            innerRadius={65}        
-            paddingAngle={5}       
-            cornerRadius={12}      
-            stroke="none"
-          >
-            {data.map((entry, index) => (
-              <Cell key={index} fill={entry.color} />
-            ))}
-          </Pie>
+      {/* Chart */}
+      <div className="w-full h-[220px] sm:h-[260px]">
+        <ResponsiveContainer width="100%" height="100%">
+          <PieChart>
+            <Pie
+              data={data}
+              dataKey="value"
+              nameKey="name"
+              cx="50%"
+              cy="50%"
+              outerRadius="80%"
+              innerRadius="55%"
+              paddingAngle={6}
+              cornerRadius={10}
+              stroke="none"
+            >
+              {data.map((entry, index) => (
+                <Cell key={index} fill={entry.color} />
+              ))}
+            </Pie>
 
-          <Tooltip />
-        </PieChart>
-      </ResponsiveContainer>
+            <Tooltip
+              formatter={(value) => [
+                typeof value === "number" ? value.toLocaleString() : "-",
+                "",
+              ]}
+              contentStyle={{
+                borderRadius: "8px",
+                border: "none",
+                boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+              }}
+            />
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
 
-      <div className="mt-4 space-y-2 text-sm">
+      {/* Legend */}
+      <div className="mt-3 sm:mt-4 grid grid-cols-2 sm:grid-cols-1 gap-2 text-sm">
         {data.map((item) => (
-          <div key={item.name} className="flex items-center gap-2">
+          <div
+            key={item.name}
+            className="flex items-center gap-2"
+          >
             <span
-              className="h-3 w-3 rounded-full"
+              className="h-3 w-3 rounded-full flex-shrink-0"
               style={{ backgroundColor: item.color }}
             />
-            <span className="text-gray-700">
-              {item.name}: {item.value}
+            <span className="text-gray-700 truncate">
+              {item.name}: <span className="font-medium">{item.value}</span>
             </span>
           </div>
         ))}

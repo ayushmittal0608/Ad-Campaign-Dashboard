@@ -1,4 +1,5 @@
 "use client";
+
 import "./globals.css";
 import Sidebar from "../components/layout/Sidebar";
 import Navbar from "../components/layout/Topbar";
@@ -10,30 +11,49 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
     <html lang="en">
-      <body className="bg-gray-100 text-gray-900 h-screen overflow-hidden">
+      <body className="bg-gray-100 text-gray-900 h-screen">
         
-        {/* Topbar */}
-        <div className="fixed top-0 left-0 right-0 h-16 z-40">
+        {/* Navbar (TOP MOST) */}
+        <div className="fixed top-0 left-0 right-0 h-16 z-50 flex items-center bg-white shadow">
+          <button
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            className="md:hidden ml-4 p-2 rounded hover:bg-gray-100"
+          >
+            <Bars3CenterLeftIcon className="h-6 w-6" />
+          </button>
           <Navbar />
         </div>
 
+        {/* Overlay (below navbar) */}
+        {sidebarOpen && (
+          <div
+            className="fixed inset-0 bg-black/40 z-30 md:hidden"
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
+
         {/* Sidebar */}
         <div
-          className={`fixed top-16 left-0 h-[calc(100vh-64px)] w-64 z-30
+          className={`fixed top-16 left-0 z-40 h-[calc(100vh-64px)] w-64 bg-white
           transition-transform duration-300
-          ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}`}
+          ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
+          md:translate-x-0`}
         >
-          <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+          <Sidebar
+            sidebarOpen={sidebarOpen}
+            setSidebarOpen={setSidebarOpen}
+          />
         </div>
 
-        {/* Toggle Button */}
+        {/* Desktop Toggle */}
         <button
           onClick={() => setSidebarOpen(!sidebarOpen)}
-          className={`fixed top-20 left-2 z-50 bg-white p-2 rounded  ${sidebarOpen ? "left-64" : "left-2"}`}
+          className={`hidden md:block fixed top-20 z-50 bg-white p-2 rounded shadow
+          ${sidebarOpen ? "left-64" : "left-2"}`}
         >
           <Bars3CenterLeftIcon className="h-5 w-5" />
         </button>
@@ -41,8 +61,8 @@ export default function RootLayout({
         {/* Main Content */}
         <main
           className={`pt-16 transition-all duration-300
-          ${sidebarOpen ? "ml-64" : "ml-0"}
-          h-screen overflow-y-auto p-6`}
+          md:ml-64
+          h-[calc(100vh-64px)] overflow-y-auto p-4 sm:p-6`}
         >
           {children}
         </main>
